@@ -1,0 +1,3 @@
+[submodule "dog_hunter_core"]
+	path = dog_hunter_core
+	url = https://github.com/AlexAndrianov/dog_hunter_core.git

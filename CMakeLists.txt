@@ -6,19 +6,25 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Network)
+find_package(SQLite3 REQUIRED)
 
-set(QT_QMAKE_EXECUTABLE console)
+# Add the library subdirectory
+add_subdirectory(dog_hunter_core)
+
+# set(QT_QMAKE_EXECUTABLE console)
 
 add_executable(dog_hunter_server
   main.cpp
   TCPServer.h
+  Database.h
 )
-target_link_libraries(dog_hunter_server Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network)
+
+target_link_libraries(dog_hunter_server Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network core SQLite::SQLite3)
 
 include(GNUInstallDirs)
 install(TARGETS dog_hunter_server
