@@ -11,12 +11,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Network)
+
 find_package(SQLite3 REQUIRED)
+find_package(GTest REQUIRED)
 
 # Add the library subdirectory
 add_subdirectory(dog_hunter_core)
-
-# set(QT_QMAKE_EXECUTABLE console)
 
 add_executable(dog_hunter_server
   main.cpp
@@ -31,3 +31,11 @@ install(TARGETS dog_hunter_server
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_executable(RunTests TCPServer.h Database.h Tests.cpp)
+
+target_link_libraries(RunTests Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network core SQLite::SQLite3 gtest::gtest)
+
+# Add tests
+include(GoogleTest)
+gtest_discover_tests(RunTests)

@@ -1,5 +1,6 @@
 [requires]
 sqlite3/3.45.3
+gtest/1.14.0
 
 [generators]
 CMakeDeps

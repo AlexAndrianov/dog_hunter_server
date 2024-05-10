@@ -23,7 +23,7 @@ private:
         }
 
         // check db on empty
-        int count;
+        int count = 0;
 
         rc = sqlite3_exec(db, "SELECT COUNT(*) FROM DogOwners;", [](void* data, int argc, char** argv, char**) {
                 if (argc > 0)
@@ -31,14 +31,7 @@ private:
                 return 0;
             }, &count, nullptr);
 
-        if (rc != SQLITE_OK) {
-            qDebug() << "SQL error: " << sqlite3_errmsg(db);
-            sqlite3_close(db);
-            return nullptr;
-        }
-
-        if(count > 0)
-        {
+        if (rc == SQLITE_OK && count > 0) {
             // database has already been created
             return db;
         }
@@ -189,9 +182,10 @@ public:
         sqlite3_bind_text(stmt_dogs, 1, login.c_str(), -1, SQLITE_STATIC);
 
         while (sqlite3_step(stmt_dogs) == SQLITE_ROW) {
-            auto dog = std::make_shared<Dog>(reinterpret_cast<const char*>(sqlite3_column_text(stmt_dogs, 5)), *dogOwner);
-            dog->age = sqlite3_column_int(stmt_dogs, 6);
-            dogOwner->_dogs.emplace(dog->_name, dog);
+            auto name = reinterpret_cast<const char*>(sqlite3_column_text(stmt_dogs, 4));
+            auto dog = std::make_shared<Dog>(name, *dogOwner);
+            dog->age = sqlite3_column_int(stmt_dogs, 5);
+            dogOwner->_dogs.emplace(name, dog);
         }
 
         sqlite3_finalize(stmt_dogs);
